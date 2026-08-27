@@ -1,262 +1,165 @@
 # Titanic_Data-cleaning-preprocessing-For-Ml-
-Titanic Dataset — Data Cleaning & Preprocessing Report
-1. Introduction
+# 🚢 Titanic Data Cleaning & Preprocessing
+
+## Project Overview
+
+This project focuses on cleaning and preprocessing the Kaggle Titanic dataset for machine learning.
+
+The objective is to transform raw passenger data into a clean, numerical, and standardized dataset suitable for machine-learning algorithms.
+
+## Objectives
+
+* Explore the raw Titanic dataset
+* Identify missing values
+* Handle missing data
+* Remove duplicate records
+* Encode categorical variables
+* Create useful features
+* Detect and handle outliers
+* Standardize numerical features
+* Export the processed dataset
 
-The Titanic dataset is a well-known dataset used for learning data analysis and machine learning. It contains information about passengers who travelled on the Titanic, including passenger class, age, gender, family information, fare, and survival status.
+## Dataset
 
-The objective of this project was to clean and preprocess the raw Titanic dataset and prepare it for machine-learning applications.
+The project uses the Kaggle Titanic dataset.
 
-2. Objective
+The main dataset contains passenger information such as:
 
-The main objectives of the project were:
+* Passenger class
+* Passenger sex
+* Passenger age
+* Number of siblings/spouses
+* Number of parents/children
+* Passenger fare
+* Embarkation port
+* Survival status
 
-Import and explore the dataset.
-Identify missing values and data-quality problems.
-Handle missing values using appropriate imputation techniques.
-Convert categorical variables into numerical variables.
-Create useful features from existing data.
-Identify potential outliers using visualization.
-Remove selected extreme observations using the IQR method.
-Standardize numerical features.
-Save the final processed dataset.
-3. Tools and Technologies
+## Technologies Used
 
-The following technologies were used:
+* Python
+* Pandas
+* NumPy
+* Matplotlib
+* Seaborn
+* Scikit-learn
+* Jupyter Notebook
+* Git
+* GitHub
 
-Python
-Pandas
-NumPy
-Matplotlib
-Seaborn
-Scikit-learn
-Jupyter Notebook
-VS Code
-Git
-GitHub
-4. Dataset Exploration
+## Project Structure
 
-The dataset was first loaded using Pandas.
+```text
+titanic-data-preprocessing/
+│
+├── data/
+│   ├── raw/
+│   └── 
+│
+├── outputs
+│   └── data_cleaning_preprocessing.ipynb
+│
+├── src/
+│   ├── data_loading.py
+│   ├── data_cleaning.py
+│   ├── 
+│   ├── scaling encoding.py
+│   ├── outlier_detection.py
+│   └──prepr
+│
+├── visualizations/
+├── reports/
+├── main.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
 
-Basic dataset properties were examined using:
+## Data Preprocessing Steps
 
-head()
-shape
-info()
-dtypes
-describe()
+### 1. Data Exploration
 
-Missing values and duplicate rows were also identified.
+The dataset was inspected using:
 
-This initial exploration helped understand the structure and quality of the raw data before preprocessing.
+* `head()`
+* `shape`
+* `info()`
+* `dtypes`
+* `describe()`
+* missing-value analysis
+* duplicate-value analysis
 
-5. Missing Value Handling
+### 2. Missing Value Treatment
 
-Missing values were identified using:
+Numerical missing values such as Age were handled using median imputation.
 
-df.isnull().sum()
-Age
+Categorical missing values such as Embarked were handled using mode imputation.
 
-The Age column contained missing values.
+The Cabin feature was transformed into a `CabinKnown` feature to preserve information about whether cabin information was available.
 
-Median imputation was used:
+### 3. Feature Engineering
 
-df["Age"] = df["Age"].fillna(
-    df["Age"].median()
-)
+Two additional features were created:
 
-Median was selected because it is less sensitive to extreme observations.
+* `FamilySize`
+* `IsAlone`
 
-Embarked
+These features provide additional information about the passenger's family situation.
 
-Missing values in the Embarked column were replaced using the most frequent category:
+### 4. Categorical Encoding
 
-df["Embarked"] = df["Embarked"].fillna(
-    df["Embarked"].mode()[0]
-)
-Cabin
+Categorical features such as Sex and Embarked were converted into numerical representations using one-hot encoding.
 
-Instead of attempting to predict missing cabin numbers, a new binary feature called CabinKnown was created.
+### 5. Outlier Detection
 
-1 → Cabin information available
-0 → Cabin information unavailable
+Boxplots were used to visualize potential outliers.
 
-This preserves useful information contained in the missingness pattern.
+The IQR method was used to identify extreme numerical observations.
 
-6. Duplicate Removal
+### 6. Feature Scaling
 
-Duplicate rows were checked using:
+Numerical variables were standardized using `StandardScaler`.
 
-df.duplicated().sum()
+Standardization transforms numerical variables to a common scale with approximately zero mean and unit variance.
 
-Duplicate observations were removed using:
+## Output
 
-df.drop_duplicates()
+The cleaned dataset is stored in:
 
-This prevents repeated observations from unnecessarily affecting the analysis.
-
-7. Feature Engineering
-
-Two new features were created.
-
-FamilySize
-df["FamilySize"] = (
-    df["SibSp"] +
-    df["Parch"] +
-    1
-)
-
-FamilySize represents the total number of people in the passenger's immediate travelling family.
-
-IsAlone
-df["IsAlone"] = (
-    df["FamilySize"] == 1
-).astype(int)
-
-This identifies whether a passenger travelled alone.
-
-8. Feature Selection
-
-The following columns were removed from the basic ML feature set:
-
-PassengerId
-Name
-Ticket
-Cabin
-
-PassengerId is an identifier rather than a meaningful predictive feature.
-
-Name and Ticket were excluded because they require additional feature extraction to be used effectively.
-
-Cabin was replaced with the more useful CabinKnown feature.
-
-9. Categorical Encoding
-
-Machine-learning algorithms generally require numerical inputs.
-
-Categorical features such as Sex and Embarked were converted into numerical variables using one-hot encoding.
-
-pd.get_dummies(
-    df,
-    columns=["Sex", "Embarked"],
-    drop_first=True,
-    dtype=int
-)
-
-This converted categorical information into machine-readable numerical features.
-
-10. Outlier Detection
-
-Potential outliers were visualized using boxplots.
-
-Boxplots were generated for numerical variables such as:
-
-Age
-Fare
-SibSp
-Parch
-FamilySize
-
-The IQR method was used for selected numerical features.
-
-The interquartile range was calculated as:
-
-IQR = Q3 - Q1
-
-The lower and upper limits were calculated as:
-
-Lower Bound = Q1 - 1.5 × IQR
-
-Upper Bound = Q3 + 1.5 × IQR
-
-Observations outside these limits were considered potential outliers.
-
-Outlier treatment was performed cautiously because extreme values can sometimes represent legitimate observations.
-
-11. Feature Scaling
-
-Numerical features were standardized using StandardScaler.
-
-The standardization formula is:
-
-z = (x - μ) / σ
-
-where:
-
-x = original value
-μ = mean
-σ = standard deviation
-
-The main numerical variables considered for scaling were:
-
-Age
-Fare
-SibSp
-Parch
-FamilySize
-
-Scaling ensures that variables with different numerical ranges can be processed on a comparable scale.
-
-12. Final Dataset
-
-After preprocessing, the dataset contained:
-
-handled missing values
-encoded categorical variables
-engineered features
-selected numerical features
-standardized numerical variables
-reduced data-quality issues
-
-The final dataset was exported as:
-
+```text
 data/processed/titanic_cleaned.csv
-13. Project Workflow
+```
 
-The complete workflow was:
+## Learning Outcomes
 
-Raw Titanic Dataset
-        ↓
-Data Loading
-        ↓
-Data Exploration
-        ↓
-Missing Value Analysis
-        ↓
-Missing Value Treatment
-        ↓
-Duplicate Removal
-        ↓
-Feature Engineering
-        ↓
-Categorical Encoding
-        ↓
-Outlier Detection
-        ↓
-Outlier Treatment
-        ↓
-Feature Scaling
-        ↓
-Processed Dataset
-14. Key Learning Outcomes
+Through this project, I learned how to:
 
-This project provided practical experience with:
+* inspect raw datasets
+* identify data-quality issues
+* handle missing values
+* engineer features
+* encode categorical variables
+* detect potential outliers
+* standardize numerical features
+* organize a machine-learning preprocessing project
+* use Git and GitHub for version control
 
-Pandas data manipulation
-NumPy numerical operations
-Missing-value treatment
-Categorical encoding
-Feature engineering
-Outlier detection
-IQR-based outlier treatment
-Feature scaling
-Data visualization
-Python project organization
-Git version control
-GitHub repository management
-15. Conclusion
+## Version
 
-The raw Titanic dataset was successfully transformed into a cleaner and machine-learning-ready dataset.
+Current release:
 
-The project demonstrated the complete basic data preprocessing workflow, beginning with raw data exploration and ending with a standardized processed dataset.
+`v1.0.0`
+
+## Future Scope
+
+The cleaned dataset can be used for the next stage of the project:
+
+* Train/test splitting
+* Logistic Regression
+* Decision Tree
+* Random Forest
+* XGBoost
+* Model evaluation
+* Survival prediction
+
 
 The processed dataset can be used as input for the next stage of the project, where machine-learning models can be trained to predict passenger survival.
